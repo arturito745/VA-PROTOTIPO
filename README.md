@@ -1,5 +1,13 @@
 # VA-PROTOTIPO
 
+# **Proyecto: *Movimiento Incandescente*
+
+Soy **Ricardo Arturo Guerrero Oliva**, estudiante de **Ingeniería en Diseño y Entretenimiento Digital** en la **Universidad Pontificia Bolivariana**.
+
+Este es mi proyecto de **Visión Artificial**, donde exploro cómo la cámara puede ir más allá de mostrar una imagen literal y convertirse en un sistema que revela la energía y el movimiento del cuerpo. La propuesta, llamada *Movimiento Incandescente*, convierte cada gesto en un rastro de color inspirado en la visión térmica, transformando la presencia en una experiencia visual generativa y efímera.
+
+
+¿Quieres que te dé también **otros posibles nombres** (más conceptuales o más técnicos) para que elijas el que mejor encaje con tu estilo?
 
 # Bitácora 
 
