@@ -1,6 +1,6 @@
 # VA-PROTOTIPO
 
-# **Proyecto: *Movimiento Incandescente**
+# *Proyecto: *Movimiento Incandescente**
 
 Soy **Ricardo Arturo Guerrero Oliva**, estudiante de **Ingeniería en Diseño y Entretenimiento Digital** en la **Universidad Pontificia Bolivariana**.
 
