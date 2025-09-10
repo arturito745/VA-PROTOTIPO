@@ -12,7 +12,7 @@ Este es mi proyecto de **Visión Artificial**, donde exploro cómo la cámara pu
 # Bitácora 
 
 
-## Visión Predadora
+## Visión Predator
 
 El proyecto busca que la cámara no muestre el cuerpo como tal, sino su **energía en forma de visión térmica**, inspirada en el estilo de *Predator*. Los movimientos suaves se pintan en verdes y azules, mientras que los gestos intensos explotan en rojos y amarillos, como si el cuerpo fuese un radar de calor.
 
@@ -23,6 +23,7 @@ La idea es transmitir la sensación de **ser visto como presencia y no como rost
 
 
 ## Referentes
+<img width="300" height="168" alt="image" src="https://github.com/user-attachments/assets/c4facb2f-7cf2-4b0d-a48c-2f68507dec04" />
 
 Para darle forma a la propuesta revisamos varios referentes. De los **mapas de calor** en seguridad tomamos la lógica de traducir el movimiento en intensidades visibles. De proyectos con **Kinect y visuales en vivo** vimos cómo la interacción corporal puede ser la base de un espectáculo generativo. También nos inspiramos en artistas como **Memo Akten, Rafael Lozano-Hemmer y Golan Levin**, que trabajan con la idea de convertir la presencia humana en experiencias digitales abstractas, donde el cuerpo se traduce en luz, energía y trazos. Esa mezcla de inspiración nos llevó a pensar que lo nuestro debía ser un sistema sencillo pero expresivo, donde cada movimiento deje su huella en tiempo real.
 
