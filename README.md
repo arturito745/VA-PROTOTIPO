@@ -301,9 +301,58 @@ function draw() {
 
 Al principio lo configuré con más opacidad y borraba demasiado rápido. Después lo bajé y logré un balance donde las huellas permanecen un poco más, pero igual desaparecen con el tiempo.
 
+Listo, aquí te lo dejo en un tono más relax, tipo bitácora, con el título y ejemplos de código para que quede más natural.
 
 
+## Desafíos técnicos generales
 
+### 1. Ruido en la cámara
+
+Al inicio el sistema detectaba movimiento aunque yo estuviera quieto. La cámara siempre tiene un poco de ruido o cambios de luz y eso hacía que se activaran demasiados píxeles. El resultado era una pantalla llena de puntos aleatorios.
+
+La primera solución fue usar un **threshold fijo**:
+
+```js
+if (diff > 25) {
+  stroke(255);
+  point(x, y);
+}
+```
+
+Pero eso no era suficiente, porque cambiaba mucho según el espacio donde estaba. Entonces lo mejor fue poner un **slider** para calibrar en tiempo real:
+
+```js
+thresholdSlider = createSlider(0, 100, 25, 1);
+```
+
+
+### 2. Colores planos que no transmitían nada
+
+En un inicio todo era blanco y negro. Luego probé con colores en RGB, pero se veían planos, sin gracia, más como un test técnico que como algo artístico.
+
+Lo que cambió todo fue usar **HSB** y mapear la intensidad a una escala de calor:
+
+```js
+let intensity = map(diff, 0, 150, 0, 1);
+let hueVal = lerp(200, 20, intensity);
+let col = color(hueVal, 100, 100, 60);
+```
+
+Con esto ya se sentía más como visión térmica: azules en movimientos suaves y rojos intensos cuando había mucha actividad.
+
+### 3. El rastro que se borraba muy rápido
+
+Otro problema fue que los dibujos desaparecían enseguida, no quedaba esa sensación de estela que buscaba. Al principio dibujaba directo en el canvas principal y todo se reiniciaba en cada frame.
+
+La solución fue crear un **buffer extra** (`trailImg`) y aplicar un rectángulo negro semitransparente en cada actualización:
+
+```js
+trailImg.fill(0, 0, 0, 5);
+trailImg.noStroke();
+trailImg.rect(0, 0, width, height);
+```
+
+Así el movimiento no se borra de golpe, sino que queda flotando un poco más en la pantalla antes de desaparecer.
 
 ## Pruebas con usuarios
 
