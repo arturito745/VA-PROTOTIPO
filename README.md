@@ -1,4 +1,72 @@
 # VA-PROTOTIPO
+Perfecto, lo estructuro en tres partes claras, pero manteniendo el tono natural y fluido:
+
+---
+
+# Bitácora – Mural Corporal
+
+## Concepto
+
+La idea central del proyecto es sencilla: **usar el cuerpo como un pincel y la pantalla como un mural vivo**. No buscamos mostrar a la persona de manera literal, sino su energía, los rastros que deja al moverse, como si cada gesto pintara el aire por unos segundos. Queremos que la experiencia se sienta más abstracta que figurativa, un espejo que no devuelve tu cara, sino la intensidad de tu movimiento convertido en color y estela.
+
+## Referentes
+
+Para darle forma a la propuesta revisamos varios referentes. De los **mapas de calor** en seguridad tomamos la lógica de traducir el movimiento en intensidades visibles. De proyectos con **Kinect y visuales en vivo** vimos cómo la interacción corporal puede ser la base de un espectáculo generativo. También nos inspiramos en artistas como **Memo Akten, Rafael Lozano-Hemmer y Golan Levin**, que trabajan con la idea de convertir la presencia humana en experiencias digitales abstractas, donde el cuerpo se traduce en luz, energía y trazos. Esa mezcla de inspiración nos llevó a pensar que lo nuestro debía ser un sistema sencillo pero expresivo, donde cada movimiento deje su huella en tiempo real.
+
+---
+
+###  Referentes artísticos y conceptuales
+
+1. **Rafael Lozano-Hemmer – *Body Movies***
+
+   * Proyecciones a gran escala donde las siluetas de los transeúntes se transforman en imágenes.
+
+2. **Daniel Rozin – *Digital Mirrors***
+
+   * Espejos interactivos que reconstruyen el cuerpo con materiales o píxeles.
+
+3. **Camille Utterback – *Text Rain***
+
+   * Letras que caen como lluvia y se detienen en las siluetas de los cuerpos de los espectadores.
+
+4. **Golan Levin – *Messa di Voce***
+
+   * Voz y movimiento corporal generan visualizaciones en tiempo real.
+
+5. **Daito Manabe**
+
+   * Artista japonés que combina cuerpo, movimiento y visualizaciones digitales en performances.
+
+---
+
+###  Referentes técnicos
+
+6. **Processing Motion Detection examples** (Daniel Shiffman – *Coding Train* en YouTube).
+
+   * Tutoriales de comparación de frames.
+
+7. **p5.js webcam + particles sketches**
+
+   * Ejemplos donde la cámara controla sistemas de partículas y trazos.
+
+8. **OpenFrameworks / OpenCV Motion Tracking**
+
+   * Librerías que trabajan con detección de movimiento y siluetas
+
+
+## Parte técnica
+
+Para hacerlo posible trabajamos con **p5.js** y la cámara como insumo. La técnica parte de algo básico: comparar un frame con el anterior y detectar sus diferencias. Esas diferencias se convierten en puntos, luego en colores, y más adelante en estelas. 
+
+* Un **slider de sensibilidad** para calibrar el threshold en tiempo real.
+* El uso de **HSB** para crear un mapa de calor (azules en movimientos suaves, rojos en los intensos).
+* Un **buffer gráfico (`createGraphics`)** para que los gestos no desaparezcan al instante, sino que queden como un eco o rastro.
+
+La planificación se pensó en pasos muy claros: primero probar la detección en blanco y negro, luego añadir control, después trabajar la paleta de color y finalmente integrar el efecto de estela.
+
+---
+
+¿Quieres que ahora siga con la **segunda parte de la bitácora** (primeras pruebas en blanco y negro, problemas con el ruido y cómo lo resolviste con el slider)?
 
 # El proceso
 
