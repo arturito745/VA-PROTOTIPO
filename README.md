@@ -1,13 +1,18 @@
 # VA-PROTOTIPO
-Perfecto, lo estructuro en tres partes claras, pero manteniendo el tono natural y fluido:
 
----
 
-# Bitácora – Mural Corporal
+# Bitácora 
 
-## Concepto
 
-La idea central del proyecto es sencilla: **usar el cuerpo como un pincel y la pantalla como un mural vivo**. No buscamos mostrar a la persona de manera literal, sino su energía, los rastros que deja al moverse, como si cada gesto pintara el aire por unos segundos. Queremos que la experiencia se sienta más abstracta que figurativa, un espejo que no devuelve tu cara, sino la intensidad de tu movimiento convertido en color y estela.
+## Visión Predadora
+
+El proyecto busca que la cámara no muestre el cuerpo como tal, sino su **energía en forma de visión térmica**, inspirada en el estilo de *Predator*. Los movimientos suaves se pintan en verdes y azules, mientras que los gestos intensos explotan en rojos y amarillos, como si el cuerpo fuese un radar de calor.
+
+La idea es transmitir la sensación de **ser visto como presencia y no como rostro**: cada gesto deja un rastro, cada pausa se siente como calma. No es un espejo realista, sino una **traducción abstracta del movimiento en colores vivos y efímeros**.
+[Ver referencia: Estilo “visión térmica Predator”](https://www.youtube.com/watch?v=OW1gGDbO_1U)
+
+
+
 
 ## Referentes
 
