@@ -1,159 +1,252 @@
 # VA-PROTOTIPO
-que mas me falta despues de hacer la bitacora y ya todo lo tecnico todo esto me van a evaluar # Guía para el Desarrollo del Proyecto de Medio Semestre
 
-# Introducción
+# Bitácora del proceso
 
-Este proyecto integra conceptos fundamentales de visión artificial con la creación de contenido visual interactivo. Utilizarás p5.js para desarrollar una experiencia donde la detección de movimiento se convierte en el elemento central de interacción con gráficos generativos. Este proyecto te permitirá explorar la intersección entre tecnología y arte, aplicando técnicas de visión artificial desarrolladas durante la primera mitad del semestre para crear una experiencia visual e interactiva.
+Cuando empecé con este proyecto lo primero fue buscar referentes. Vi algunos ejemplos de mapas de calor en seguridad, proyectos hechos con Kinect y también visuales en vivo hechos en Processing/p5.js. Eso me inspiró a pensar el movimiento no solo como detección técnica, sino como algo que deja una huella visual como las estelas que me gustan mucho. Esa idea de rastro fue la que guió casi todo el diseño.
 
-# Componentes Clave
+---
 
-1. Detección de movimiento (background subtraction y frame difference)
-2. Procesamiento de imágenes en tiempo real con p5.js
-3. Generación de contenido visual interactivo
-4. Análisis de intensidad y dirección de movimiento
-5. Integración de visión artificial y diseño generativo
+## Primeras pruebas
 
-# Herramientas y Técnicas
+El código comenzó súper simple: solo comparar un frame con el anterior y pintar en blanco los píxeles que habían cambiado.
 
-- p5.js como plataforma principal de desarrollo
-- Técnicas de detección de movimiento: background subtraction y frame difference
-- Procesamiento de imágenes: thresholding, máscaras, análisis de píxeles
-- Análisis de movimiento: velocidad, dirección, intensidad
-- Programación creativa para la generación de contenido artístico
+```
+let video;
+let prevFrame;
+let threshold = 25;
 
-# Objetivo del Proyecto
+function setup() {
+  createCanvas(640, 480);
+  pixelDensity(1);
 
-Crear una experiencia interactiva en p5.js que utilice la detección de movimiento corporal como input para manipular y generar contenido visual artístico, aplicando técnicas de Visión Artificial y principios de diseño generativo.
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
 
-## Estructura del Proyecto
+  prevFrame = createImage(width, height);
+}
 
-El proyecto se desarrollará en **dos etapas** durante **dos semanas**:
+function draw() {
+  background(0);
 
-### **Semana 1: Etapa de Diseño**
+  video.loadPixels();
+  prevFrame.loadPixels();
 
-**Enfoque:** Ideación, investigación y planificación
+  if (video.pixels.length > 0 && prevFrame.pixels.length > 0) {
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        let index = (x + y * width) * 4;
 
-**Actividades:**
+        let r = video.pixels[index + 0];
+        let g = video.pixels[index + 1];
+        let b = video.pixels[index + 2];
 
-1. **Ideación de la experiencia**
-    - Definir el concepto artístico/interactivo
-    - Seleccionar una de las modalidades de detección de movimiento (ver sección de Desafíos)
-    - Establecer la narrativa o propuesta estética
-2. **Búsqueda de referentes**
-    - Investigar instalaciones interactivas similares
-    - Analizar proyectos de arte digital y new media
-    - Estudiar casos de uso de Visión Artificial en arte
-    - 
-3. **Diseño en papel**
-    - Bocetos de la interfaz y experiencia visual
-    - Diagramas de flujo de la interacción
-    - Wireframes de la composición visual
-    - Storyboard de la experiencia del usuario
-4. **Planificación técnica**
-    - Definir uso específico del cuerpo (gestos, movimientos, posiciones)
-    - Determinar ubicación óptima de la cámara
-    - Especificar área de detección y zona de interacción
-    - Planear la lógica de procesamiento de movimiento
+        let rPrev = prevFrame.pixels[index + 0];
+        let gPrev = prevFrame.pixels[index + 1];
+        let bPrev = prevFrame.pixels[index + 2];
 
-### **Semana 2: Etapa de Implementación**
+        let diff = dist(r, g, b, rPrev, gPrev, bPrev);
 
-**Enfoque:** Desarrollo técnico y refinamiento
+        if (diff > threshold) {
+          stroke(255);
+          point(x, y);
+        }
+      }
+    }
+  }
 
-**Actividades:**
+  prevFrame.copy(video, 0, 0, width, height, 0, 0, width, height);
+}
 
-1. **Implementación del sistema de detección**
-    - Configuración de captura de video
-    - Desarrollo de algoritmos de background subtraction/frame difference
-    - Calibración de sensibilidad y thresholds
-2. **Desarrollo del contenido generativo**
-    - Programación de elementos visuales reactivos
-    - Implementación de la lógica de interacción
-    - Integración entre detección y generación visual
-3. **Optimización y pulimiento**
-    - Ajuste de rendimiento en tiempo real
-    - Refinamiento de la experiencia de usuario
-    - Documentación del código y proceso
+```
+<img width="817" height="655" alt="image" src="https://github.com/user-attachments/assets/3c080c3b-5ad8-4a2a-b79a-b78e79f3d88e" />
 
-## Ideas de Interacción con Detección de Movimiento
+Esto funcionaba, pero tenía un problema: cualquier mínimo ruido o movimiento de luz activaba demasiados píxeles y todo se volvía caótico.
 
-### **Opción 1: Detector de Velocidad**
+---
 
-Medir qué tan rápido se mueve algo comparando la cantidad de diferencia entre frames.
+## Sumando controles
 
-- **Técnica:** Análisis cuantitativo de frame difference
-- **Output:** Clasificación en "Inmóvil", "Lento", "Normal", "Rápido"
-- **Aplicación visual:** Barra de velocidad, efectos que escalan con intensidad
-- **Casos de uso:** Visualizaciones de energía, sistemas reactivos de color/forma
+La primera solución fue agregar un **threshold** para filtrar el ruido. Luego pensé que no era suficiente dejarlo fijo, porque dependía mucho de la luz o del entorno, así que puse un **slider** para poder calibrar la sensibilidad. Eso ya le dio más control y hacía que el sistema fuera usable en diferentes espacios.
 
-### **Opción 2: Trigger de Acción**
+```js
+thresholdSlider = createSlider(0, 100, 25, 1);
+```
 
-Sistema que responda solo cuando detecta movimiento ACTIVO (no presencia estática).
+---
 
-- **Técnica:** Background subtraction con detección de cambios significativos
-- **Output:** Estado binario (movimiento/sin movimiento)
-- **Aplicación visual:** Efectos que se activan/desactivan, cambios de estado visual
-- **Casos de uso:** Instalaciones que "despiertan", sistemas de partículas reactivos
+## Buscandondo los colores 
 
-### **Opción 3: Contador de Gestos**
+El blanco y negro se sentía muy plano, así que probé con colores. Al principio usé RGB, pero no me convencía. Pasar a **HSB** me permitió mapear el movimiento como una escala de calor: azul cuando es leve, rojo cuando es intenso.
 
-Detectar movimientos discretos como "waves" o gestos de mano.
+```js
+let hueVal = lerp(200, 20, intensity);
+let col = color(hueVal, 100, 100, 60);
+```
+```js
+        let b = video.pixels[index + 2];
 
-- **Técnica:** Análisis de picos de actividad en frame difference
-- **Output:** Conteo de gestos completados
-- **Aplicación visual:** Acumulación de elementos, progresión visual
-- **Casos de uso:** Juegos gestuales, narrativas interactivas acumulativas
+        let rPrev = prevFrame.pixels[index + 0];
+        let gPrev = prevFrame.pixels[index + 1];
+        let bPrev = prevFrame.pixels[index + 2];
 
-### **Opción 4: Detector de Dirección**
+        let diff = dist(r, g, b, rPrev, gPrev, bPrev);
 
-Determinar hacia dónde se está moviendo algo.
+        if (diff > threshold) {
+          // Mapear la intensidad de la diferencia a [0,1]
+          let intensity = map(diff, 0, 150, 0, 1);
+          intensity = constrain(intensity, 0, 1);
 
-- **Técnica:** Comparación regional de diferencias entre frames
-- **Output:** Dirección predominante (Izquierda, Derecha, Arriba, Abajo)
-- **Aplicación visual:** Flechas direccionales, flujo de elementos gráficos
-- **Casos de uso:** Control de navegación visual, composiciones direccionales
+          // Escala de calor (azul → rojo)
+          let hueVal = lerp(200, 20, intensity);
+          let col = color(hueVal, 100, 100, 80);
 
-### **Opción 5: Control por Movimiento**
+          stroke(col);
+          strokeWeight(4);
+          point(x, y);
+        }
+      }
+    }
+  }
 
-Usar frame difference para controlar un elemento en pantalla.
+  
+  prevFrame.copy(video, 0, 0, width, height, 0, 0, width, height);
 
-- **Técnica:** Mapeo de intensidad de movimiento a parámetros de control
-- **Output:** Valores continuos para control de elementos
-- **Aplicación visual:** Elementos que siguen el movimiento, juegos controlados por gestos
-- **Casos de uso:** Interfaces gestuales, experiencias de control corporal
+  
+  noStroke();
+  fill(255);
+  textSize(14);
+  text("Sensibilidad: " + threshold, 220, height + 25);
+}
 
-## Requisitos del Proyecto
+```
+<img width="818" height="647" alt="image" src="https://github.com/user-attachments/assets/3b87482b-3dde-4cde-b5ef-85d7392513d5" />
+<img width="825" height="537" alt="image" src="https://github.com/user-attachments/assets/800600c4-2ae9-426b-8fc1-5801529abd22" />
 
-### **Creativos:**
 
-1. Desarrollar una propuesta estética coherente y original
-2. Crear al menos tres variaciones visuales basadas en diferentes interacciones/tipos de movimiento
-3. Integrar de manera fluida la interacción corporal con la experiencia visual
-4. Demostrar comprensión de principios de diseño generativo
+Esa decisión estética cambió por completo el resultado: dejó de ser un test técnico y empezó a parecer una visual generativa.
 
-### **Técnicos:**
+---
 
-1. Implementar correctamente algún método de detección de movimiento en p5.js
-2. Crear un sistema de respuesta visual que reaccione en tiempo real al movimiento detectado
-3. Asegurar fluidez de al menos 20 FPS en la experiencia final
-4. Implementar controles para calibración (sensibilidad, threshold, etc.)
+## El dejar rastro o estela del movimiento 
 
-### **Documentales:**
+Otro paso clave fue dar un efecto de eco. Usé un `createGraphics()` extra con un rectángulo negro semitransparente para ir borrando lentamente los frames anteriores. Eso hizo que el movimiento quedara como una estela en el aire.
 
-1. Mantener bitácora del proceso con documentación semanal
-2. Incluir referencias visuales, bocetos y decisiones de diseño
-3. Documentar desafíos técnicos y sus soluciones
-4. Registrar pruebas de usuario y iteraciones
+```js
+trailImg.fill(0, 0, 0, 5);
+trailImg.rect(0, 0, width, height);
+```
+```js
+       let video;
+let prevFrame;
+let threshold = 25;
+let thresholdSlider;
+let trailImg; // buffer para el rastro
 
-## Evaluación del Proyecto
+function setup() {
+  createCanvas(640, 480);
+  pixelDensity(1);
 
-### **Etapa de Diseño (40% del total):**
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
 
-- **Investigación y referentes (10%):** Calidad y relevancia de la investigación
-- **Diseño conceptual (15%):** Originalidad y coherencia de la propuesta
-- **Planificación técnica (15%):** Viabilidad y detalle del plan de implementación
+  prevFrame = createImage(width, height);
+  trailImg = createGraphics(width, height); // lienzo aparte
+  trailImg.clear();
 
-### **Etapa de Implementación (60% del total):**
+  // Slider para controlar el threshold
+  thresholdSlider = createSlider(0, 100, 25, 1);
+  thresholdSlider.position(10, height + 10);
+  thresholdSlider.style('width', '200px');
 
-- **Funcionamiento técnico (25%):** Correcta implementación de detección de movimiento
-- **Calidad visual (20%):** Estética y fluidez de la experiencia generativa
-- **Integración e interacción (15%):** Cohesión entre detección y respuesta visual
+  // Usamos modo HSB para colores tipo mapa de calor
+  colorMode(HSB, 360, 100, 100, 100);
+  trailImg.colorMode(HSB, 360, 100, 100, 100); // mismo modo para el buffer
+}
+
+function draw() {
+  background(0);
+
+  threshold = thresholdSlider.value();
+
+  video.loadPixels();
+  prevFrame.loadPixels();
+
+  if (video.pixels.length > 0 && prevFrame.pixels.length > 0) {
+    for (let x = 0; x < width; x += 6) {
+      for (let y = 0; y < height; y += 6) {
+        let index = (x + y * width) * 4;
+
+        let r = video.pixels[index + 0];
+        let g = video.pixels[index + 1];
+        let b = video.pixels[index + 2];
+
+        let rPrev = prevFrame.pixels[index + 0];
+        let gPrev = prevFrame.pixels[index + 1];
+        let bPrev = prevFrame.pixels[index + 2];
+
+        let diff = dist(r, g, b, rPrev, gPrev, bPrev);
+
+        if (diff > threshold) {
+          let intensity = map(diff, 0, 150, 0, 1);
+          intensity = constrain(intensity, 0, 1);
+
+          let hueVal = lerp(200, 20, intensity);
+          let col = color(hueVal, 100, 100, 80);
+
+          // Dibujar en el buffer trailImg
+          trailImg.noStroke();
+          trailImg.fill(col);
+          trailImg.rect(x, y, 6, 6);
+        }
+      }
+    }
+  }
+
+  // Aplicar desvanecimiento al rastro
+  trailImg.fill(0, 0, 0, 5);
+  trailImg.noStroke();
+  trailImg.rect(0, 0, width, height);
+
+  // Mostrar rastro en pantalla
+  image(trailImg, 0, 0);
+
+  // Guardar el frame actual
+  prevFrame.copy(video, 0, 0, width, height, 0, 0, width, height);
+
+  // Texto de control
+  noStroke();
+  fill(255);
+  textSize(14);
+  text("Sensibilidad: " + threshold, 220, height + 25);
+}
+
+
+```
+<img width="818" height="651" alt="image" src="https://github.com/user-attachments/assets/314e893e-a922-4c82-a0ce-0b32458c485e" />
+
+Al principio lo configuré con más opacidad y borraba demasiado rápido. Después lo bajé y logré un balance donde las huellas permanecen un poco más, pero igual desaparecen con el tiempo.
+
+
+
+
+
+## Pruebas con usuarios
+
+Probé el sistema con amigos. Si dejábamos el threshold muy bajo, cualquier micro movimiento se veía, incluso el parpadeo de la cámara. Si lo subíamos, solo movimientos grandes aparecían. Esa calibración fue fundamental.
+
+Lo interesante fue ver cómo la gente lo usaba distinto: unos hacían gestos suaves para dibujar estelas lentas, otros bailaban para llenar la pantalla de colores.
+
+
+## Reflexión
+
+El proyecto fue avanzando por capas:
+
+* De un inicio súper crudo en blanco y negro.
+* A un sistema calibrable y fluido.
+* Después se sumó el color y el rastro.
+* Y finalmente, las variaciones visuales según la energía del movimiento.
+
+Al final no se siente como un programa técnico, sino como un espejo que traduce la intensidad del cuerpo en una experiencia visual.
+
