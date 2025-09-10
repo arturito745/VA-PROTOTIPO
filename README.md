@@ -1,6 +1,6 @@
 # VA-PROTOTIPO
 
-# Bitácora del proceso
+# El proceso
 
 Cuando empecé con este proyecto lo primero fue buscar referentes. Vi algunos ejemplos de mapas de calor en seguridad, proyectos hechos con Kinect y también visuales en vivo hechos en Processing/p5.js. Eso me inspiró a pensar el movimiento no solo como detección técnica, sino como algo que deja una huella visual como las estelas que me gustan mucho. Esa idea de rastro fue la que guió casi todo el diseño.
 
@@ -249,4 +249,104 @@ El proyecto fue avanzando por capas:
 * Y finalmente, las variaciones visuales según la energía del movimiento.
 
 Al final no se siente como un programa técnico, sino como un espejo que traduce la intensidad del cuerpo en una experiencia visual.
+[![Demo en YouTube](https://img.youtube.com/vi/mXAYCqA5CLo/0.jpg)](https://youtu.be/mXAYCqA5CLo)
+# Codigo final 
+```
+let video;
+let prevFrame;
+let trailImg;
+let threshold = 25;
+let thresholdSlider;
 
+function setup() {
+  createCanvas(640, 480);
+  pixelDensity(1);
+
+  // activamos la cámara
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide(); // escondemos la vista directa de la cámara
+
+  // guardamos un frame anterior para comparar
+  prevFrame = createImage(width, height);
+
+  // lienzo extra para dibujar rastros
+  trailImg = createGraphics(width, height);
+  trailImg.clear();
+
+  // slider para controlar qué tan sensible es a los movimientos
+  thresholdSlider = createSlider(0, 100, threshold, 1);
+  thresholdSlider.position(10, height + 10);
+  thresholdSlider.style('width', '200px');
+
+  // usamos HSB para que el color cambie como un mapa de calor
+  colorMode(HSB, 360, 100, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 10); // fondo negro suave
+
+  // actualizar el threshold con lo que diga el slider
+  threshold = thresholdSlider.value();
+
+  // cargamos pixeles actuales y los del frame anterior
+  video.loadPixels();
+  prevFrame.loadPixels();
+
+  // si hay info en ambos frames, hacemos la comparación
+  if (video.pixels.length > 0 && prevFrame.pixels.length > 0) {
+    for (let x = 0; x < width; x += 6) {    // saltamos de 6 en 6 para no colapsar el pc
+      for (let y = 0; y < height; y += 6) {
+        let index = (x + y * width) * 4;
+
+        // colores actuales
+        let r = video.pixels[index + 0];
+        let g = video.pixels[index + 1];
+        let b = video.pixels[index + 2];
+
+        // colores del frame anterior
+        let rPrev = prevFrame.pixels[index + 0];
+        let gPrev = prevFrame.pixels[index + 1];
+        let bPrev = prevFrame.pixels[index + 2];
+
+        // qué tanto cambió el pixel (distancia entre colores)
+        let diff = dist(r, g, b, rPrev, gPrev, bPrev);
+
+        // si el cambio pasa el threshold, dibujamos algo
+        if (diff > threshold) {
+          // normalizamos el cambio a un rango [0,1]
+          let intensity = map(diff, 0, 150, 0, 1);
+          intensity = constrain(intensity, 0, 1);
+
+          // colores estilo mapa de calor: azul → rojo
+          let hueVal = lerp(200, 20, intensity);
+          let col = color(hueVal, 100, 100, 60);
+
+          // dibujamos un cuadradito de color en el lienzo del rastro
+          trailImg.noStroke();
+          trailImg.fill(col);
+          trailImg.rect(width - x, y, 6, 6); // espejo horizontal
+        }
+      }
+    }
+  }
+
+  // este rect semi-transparente borra un poquito el lienzo
+  // así se genera el efecto de eco/estela
+  trailImg.fill(0, 0, 0, 5);
+  trailImg.noStroke();
+  trailImg.rect(0, 0, width, height);
+
+  // mostramos el trail en pantalla
+  image(trailImg, 0, 0);
+
+  // guardamos el frame actual para la próxima comparación
+  prevFrame.copy(video, 0, 0, width, height, 0, 0, width, height);
+
+  // texto de control para ver el valor del slider
+  noStroke();
+  fill(255);
+  textSize(14);
+  text("Sensibilidad: " + threshold, 220, height + 25);
+}
+```
