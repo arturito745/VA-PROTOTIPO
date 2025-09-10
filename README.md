@@ -18,7 +18,7 @@ La idea es transmitir la sensación de **ser visto como presencia y no como rost
 
 Para darle forma a la propuesta revisamos varios referentes. De los **mapas de calor** en seguridad tomamos la lógica de traducir el movimiento en intensidades visibles. De proyectos con **Kinect y visuales en vivo** vimos cómo la interacción corporal puede ser la base de un espectáculo generativo. También nos inspiramos en artistas como **Memo Akten, Rafael Lozano-Hemmer y Golan Levin**, que trabajan con la idea de convertir la presencia humana en experiencias digitales abstractas, donde el cuerpo se traduce en luz, energía y trazos. Esa mezcla de inspiración nos llevó a pensar que lo nuestro debía ser un sistema sencillo pero expresivo, donde cada movimiento deje su huella en tiempo real.
 
----
+
 
 ###  Referentes artísticos y conceptuales
 
@@ -42,7 +42,7 @@ Para darle forma a la propuesta revisamos varios referentes. De los **mapas de c
 
    * Artista japonés que combina cuerpo, movimiento y visualizaciones digitales en performances.
 
----
+
 
 ###  Referentes técnicos
 
@@ -69,15 +69,14 @@ Para hacerlo posible trabajamos con **p5.js** y la cámara como insumo. La técn
 
 La planificación se pensó en pasos muy claros: primero probar la detección en blanco y negro, luego añadir control, después trabajar la paleta de color y finalmente integrar el efecto de estela.
 
----
 
-¿Quieres que ahora siga con la **segunda parte de la bitácora** (primeras pruebas en blanco y negro, problemas con el ruido y cómo lo resolviste con el slider)?
+
 
 # El proceso
 
 Cuando empecé con este proyecto lo primero fue buscar referentes. Vi algunos ejemplos de mapas de calor en seguridad, proyectos hechos con Kinect y también visuales en vivo hechos en Processing/p5.js. Eso me inspiró a pensar el movimiento no solo como detección técnica, sino como algo que deja una huella visual como las estelas que me gustan mucho. Esa idea de rastro fue la que guió casi todo el diseño.
 
----
+
 
 ## Primeras pruebas
 
@@ -136,7 +135,6 @@ function draw() {
 
 Esto funcionaba, pero tenía un problema: cualquier mínimo ruido o movimiento de luz activaba demasiados píxeles y todo se volvía caótico.
 
----
 
 ## Sumando controles
 
@@ -146,7 +144,6 @@ La primera solución fue agregar un **threshold** para filtrar el ruido. Luego p
 thresholdSlider = createSlider(0, 100, 25, 1);
 ```
 
----
 
 ## Buscandondo los colores 
 
@@ -199,7 +196,6 @@ let col = color(hueVal, 100, 100, 60);
 
 Esa decisión estética cambió por completo el resultado: dejó de ser un test técnico y empezó a parecer una visual generativa.
 
----
 
 ## El dejar rastro o estela del movimiento 
 
